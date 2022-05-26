@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../vuejs/vuejs-2.5.16.js"></script>
+    <script type="text/javascript" src="../vuejs/axios-0.18.0.js"></script>
+    <style>
+        #teacherdiv table{
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+        }
+        </style>
+</head>
+
+<body>
+
+    <div id="teacherdiv" style="margin: 0 auto">
+        <div id="teacherlistdiv">
+
+        <table border="1" rules="all">
+            <tr align="center">
+                <td colspan="100">
+                    按照姓名:<input type="text" v-model="searchEntity.tname" size="2"/>
+                    职位：<select v-model="searchEntity.titleId">
+                            <option value="-1">--请选择--</option>
+                            <option v-for="t in titlelist" :value="t.id">{{t.titleName}}</option>
+                        </select>
+                        学院：<select v-model="searchEntity.collegeId">
+                                <option value="-1">--请选择--</option>
+                                <option v-for="c in collegelist" :value="c.id">{{c.majorName}}</option>
+                            </select>
+                        <input type="button" value="检索" @click="findAllConn()"/>
+                </td>
+            </tr>
+            <tr align="center" bgcolor="#00ffff">
+                <th>编号</th>
+                <th>姓名</th>
+                <th>职称</th>
+                <th>学院</th>
+                <th>专业</th>
+                <th>爱好</th>
+                <th colspan="100">操作
+                    <button @click="toAdd()">新增</button>
+                </th>
+            </tr>
+            <tr v-for="t in teacherlist">
+                <td>{{t.id}}</td>
+                <td>{{t.tname}}</td>
+                <td>{{t.titleBean.titleName}}</td>
+                <td>{{t.collegeBean.majorName}}</td>
+                <td>{{t.majorBean.majorName}}</td>
+                <td>
+                    <span v-for="h in t.hobbys">
+                        {{h.hname}}
+                    </span>
+                </td>
+                <td>删除</td>
+                <td><button @click="findOne(t.id)">修改</button></td>
+            </tr>
+            <tr align="center">
+                <td colspan="100">
+                    每页显示<input type="number" @change="changesize(pageSize)" size="1" v-model="pageSize"/>条记录;当前{{pageInfo.pageNum}}/{{pageInfo.pages}}页，共{{pageInfo.total}}条记录
+                    <input type="button" value="首页" @click="paging(1)"/>
+                    <input type="button" value="上一页" @click="paging(pageInfo.prePage)"/>
+                    <input type="button" value="下一页" @click="paging(pageInfo.nextPage)"/>
+                    <input type="button" value="尾页页" @click="paging(pageInfo.pages)"/>
+                </td>
+            </tr>
+        </table>
+        </div>
+        <div id="teachersavediv" style="display: none;">
+            <table border="1" rules="all">
+                <tr>
+                    <td>姓名</td>
+                    <td><input type="text" v-model="teacher.tname"/></td>
+                </tr>
+                <tr>
+                    <td>职位</td>
+                    <td>
+                        <select v-model="teacher.titleId">
+                            <option v-for="t in titlelist" :value="t.id">{{t.titleName}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>学院</td>
+                    <td>
+                        <select v-model="teacher.collegeId" @change="changeCollege(teacher.collegeId)">
+                            <option v-for="c in collegelist" :value="c.id">{{c.majorName}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>专业</td>
+                    <td>
+                        <select v-model="teacher.majorId">
+                            <option v-for="m in majorlist" :value="m.id">{{m.majorName}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>兴趣爱好</td>
+                    <td>
+                        <span v-for="(hobby,index) in hobbylist">
+                            <input type="checkbox"  v-model="teacher.hids" :value="hobby.id"/>{{hobby.hname}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="100">
+                        <button @click="addTeacher()">保存</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript" src="../pagejs/teacher_list.js"></script>
+</body>
+</html>
